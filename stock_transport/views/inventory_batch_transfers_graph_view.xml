@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- <record id="view_account_invoice_report_graph" model="ir.ui.view">
+        <field name="name">account.invoice.report.graph</field>
+        <field name="model">account.invoice.report</field>
+        <field name="arch" type="xml">
+            <graph string="Invoices Analysis" type="line" sample="1">
+                <field name="product_categ_id" />
+                <field name="vehicle_id" type="measure" />
+            </graph>
+        </field>
+    </record> -->
+    <record id="stock_picking_batch.stock_picking_batch_action" model="ir.actions.act_window">
+        <field name="name">Batch Transfers</field>
+        <field name="res_model">stock.picking.batch</field>
+        <field name="view_mode">tree,kanban,form,graph</field>
+        <field name="domain">[('is_wave', '=', False)]</field>
+        <field name="context">{'search_default_draft': True, 'search_default_in_progress': True}</field>
+        <field name="search_view_id" ref="stock_picking_batch.stock_picking_batch_filter" />
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new batch transfer
+            </p>
+            <p>
+                The goal of the batch transfer is to group operations that may
+                (needs to) be done together in order to increase their efficiency.
+                It may also be useful to assign jobs (one person = one batch) or
+                help the timing management of operations (tasks to be done at 1pm).
+            </p>
+        </field>
+    </record>
+
+
+    <record id="view_stock_picking_batch_view_graph" model="ir.ui.view">
+        <field name="name">stock.picking.batch.graph</field>
+        <field name="model">stock.picking.batch</field>
+        <field name="arch" type="xml">
+            <graph string="Total vehicle Over Time" type="bar">
+                <field name="create_date" />
+                <field name="vehicle_id" type="measure" />
+            </graph>
+        </field>
+    </record>
+</odoo>
