@@ -6,13 +6,22 @@
         <field name="inherit_id" ref="stock_picking_batch.stock_picking_batch_form" />
         <field name="arch" type="xml">
             <xpath expr="//field[@name='scheduled_date']" position="after">
-                <group>
-                    <field name="dock_id" />
-                    <field name="vehicle_id" placeholder="Third Party Provider" />
-                    <field name="category_id" placeholder="Semi-truck(250kg, 30m\u00b3)" />
-                    <field name="weight_capacity" widget="progressbar" />
-                    <field name="volume_capacity" widget="progressbar" />
-                </group>
+                <field name="dock_id" />
+                <field name="vehicle_id" placeholder="Third Party Provider" />
+                <field name="category_id" placeholder="Semi-truck(250kg, 30m\u00b3)" />
+
+                <label for='weight_capacity' string="Weight" />
+                <div class="o_row">
+                    <field name="weight_capacity" />
+                    <field name="weight_capacity_percentage" widget="progressbar"
+                        invisible='not category_id' />
+                </div>
+                <label for='volume_capacity' string="Volume" />
+                <div class="o_row">
+                    <field name="volume_capacity" />
+                    <field name="volume_capacity_percentage" widget="progressbar"
+                        no_label="1" invisible='not category_id' />
+                </div>
             </xpath>
         </field>
     </record>
@@ -39,7 +48,7 @@
                 default_scale="week"
                 default_group_by='dock_id,vehicle_id,user_id'
                 decoration-info="state in ['draft']"
-                color="picking_type_id"
+                color="category_id"
                 pill_label="True"
                 precision="{'day': 'hour:full', 'week': 'day:full', 'month': 'day:full', 'year': 'day:full'}"
                 string="Schedule"

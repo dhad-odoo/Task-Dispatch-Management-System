@@ -9,6 +9,10 @@ class StockPickingBatch(models.Model):
     volume_capacity=fields.Float(compute='_compute_volume_capacity', store=True)
     total_transfers=fields.Integer(compute='_compute_total_transfers', string='Transfers', store=True)
     total_lines=fields.Integer(compute='_compute_total_lines', string="Lines", store=True)
+    driver_image=fields.Image(related='vehicle_id.driver_id.image_1920')
+    weight_capacity_percentage=fields.Float(compute='_compute_weight_capacity')
+    volume_capacity_percentage=fields.Float(compute='_compute_volume_capacity')
+    
 
 
     @api.depends('name','weight_capacity','volume_capacity')
@@ -40,23 +44,16 @@ class StockPickingBatch(models.Model):
                     curr_weight=curr_weight+(product.product_id.weight*product.product_qty)
             # print("wt ")
             # print(curr_weight)
+            batch.weight_capacity=curr_weight
+            # print(batch.weight_capacity)
             
             if batch.category_id.max_weight:
-                batch.weight_capacity=(curr_weight/batch.category_id.max_weight)*100
+                batch.weight_capacity_percentage=(curr_weight/batch.category_id.max_weight)*100
             else:
-                batch.weight_capacity=0
+                batch.weight_capacity_percentage=0
             # print(batch.weight_capacity)
             # print("nx ")
 
-        # for batch in self:
-        #     transfers=batch.picking_ids
-        #     curr_weight=0
-        #     for transfer in transfers:
-        #         curr_weight=curr_weight+transfer.weight
-        #     if batch.category_id.max_weight:
-        #         batch.weight_capacity=curr_weight/batch.category_id.max_weight
-        #     else:
-        #         batch.weight_capacity=0
 
            
 
@@ -73,9 +70,11 @@ class StockPickingBatch(models.Model):
                     curr_volume=curr_volume+(product.product_id.volume*product.product_qty)
             # print("vol ")
             # print(curr_volume)
+            batch.volume_capacity=curr_volume
+            # print(batch.volume_capacity)
             
             if batch.category_id.max_volume:
-                batch.volume_capacity=(curr_volume/batch.category_id.max_volume)*100
+                batch.volume_capacity_percentage=(curr_volume/batch.category_id.max_volume)*100
             else:
                 batch.volume_capacity=0
             # print(batch.volume_capacity)
@@ -86,9 +85,7 @@ class StockPickingBatch(models.Model):
     @api.depends('picking_ids')
     def _compute_total_transfers(self):
         for batch in self:
-            batch.total_transfers=len(batch.picking_ids)
-            # print("transfers")
-            # print(batch.total_transfers)  
+            batch.total_transfers=len(batch.picking_ids) 
 
 
 
@@ -98,7 +95,5 @@ class StockPickingBatch(models.Model):
     def _compute_total_lines(self):
         for batch in self:
             batch.total_lines=len(batch.move_line_ids)
-            # print("lines")
-            # print(batch.total_lines)  
 
 
